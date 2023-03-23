@@ -38,8 +38,8 @@ aws cloudformation deploy --template-file ./template-with-snapstart.yaml --stack
 #### AWS SAM (without SnapStart)
 ```bash
 cd code/sam
-sam build  -t template-with-snapstart.yaml 
-sam deploy --guided
+sam build  -t template.yaml 
+sam deploy --guided -t template.yaml
 ```
 #### AWS SAM (with SnapStart)
 ```bash
