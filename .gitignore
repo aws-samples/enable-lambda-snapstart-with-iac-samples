@@ -1,0 +1,10 @@
+.idea
+/**/.terraform/
+/**/.terraform.lock.hcl
+/**/terraform.tfstate
+/**/terraform.tfstate.backup
+/**/target
+*.iml
+/**/samconfig.toml
+/**/.aws-sam/
+/**/.terraform.tfstate.lock.info
