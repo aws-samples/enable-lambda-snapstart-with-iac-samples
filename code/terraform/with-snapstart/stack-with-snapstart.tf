@@ -42,6 +42,14 @@ resource "aws_api_gateway_method" "createtransactions" {
 resource "aws_s3_bucket" "validationfiles-bucket" {
   bucket = "validationfiless3bucket"
 }
+
+resource "aws_s3_bucket_versioning" "validationfiles-bucket-versioning" {
+  bucket = aws_s3_bucket.validationfiles-bucket.bucket
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
 resource "aws_s3_bucket_server_side_encryption_configuration" "bucketsseconfig"{
   bucket = aws_s3_bucket.validationfiles-bucket.bucket
   rule {
