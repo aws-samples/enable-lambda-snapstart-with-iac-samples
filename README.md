@@ -11,7 +11,8 @@ This allows you to compare and contrast the differences between different implem
 All the code in this repository can be deployed to your own AWS Account. Please note that you may incur cost when deploying the resources.
 
 ### Build the sample application
-Before deploying the Sample, ensure that the application successfully builds
+
+**Before** deploying the Sample, ensure that the application successfully builds
 ```bash
 cd code/UnicornStockLambda
 mvn clean package
@@ -58,6 +59,27 @@ terraform apply
 ```bash
 cd code/terraform/with-snapstart/
 terraform apply
+```
+
+#### CDK (without SnapStart)
+```bash
+cd code/cdk/without-snapstart/
+mvn clean package
+cdk deploy
+```
+
+#### CDK (with SnapStart)
+```bash
+cd code/cdk/with-snapstart/
+mvn clean package
+cdk deploy
+```
+
+### Test the application
+After deploying the application, you can invoke it with the following commands:
+```shell
+export API_GW_URL="YOUR API GATEWAY URL HERE"
+curl -XPOST "$API_GW_URL/transactions" --data '{"stockId":"UNICORN_STOCK", "quantity":"2"}' --header 'Content-Type: application/json'
 ```
 
 ## Security
