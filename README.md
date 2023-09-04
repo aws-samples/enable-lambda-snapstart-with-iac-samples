@@ -1,6 +1,6 @@
 # How to Enable Lambda Snapstart with AWS Cloudformation, AWS SAM and Terraform
 
-This Sample Code repository demonstrates how to enable Lambda SnapStart with AWS Cloudformation, AWS SAM, and Terraform.
+This Sample Code repository demonstrates how to enable Lambda SnapStart with AWS Cloudformation, AWS SAM, AWS CDK and Terraform.
 
 For each IaC tooling, you will find 2 templates: one without SnapStart and one with SnapStart.
 Each template is configured with the same architecture: an API Gateway, a Lambda Function and a DynamoDB table, and all the examples leverage the same Lambda Function code, which you can find under `code/UnicornStockLambda/`.  
