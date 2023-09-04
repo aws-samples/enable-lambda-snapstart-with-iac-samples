@@ -3,21 +3,23 @@ package com.myorg;
 import java.util.Map;
 import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.RemovalPolicy;
+import software.amazon.awscdk.Stack;
+import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.apigateway.LambdaRestApi;
 import software.amazon.awscdk.services.dynamodb.Attribute;
 import software.amazon.awscdk.services.dynamodb.AttributeType;
 import software.amazon.awscdk.services.dynamodb.BillingMode;
 import software.amazon.awscdk.services.dynamodb.Table;
+import software.amazon.awscdk.services.lambda.Alias;
 import software.amazon.awscdk.services.lambda.Architecture;
 import software.amazon.awscdk.services.lambda.Code;
 import software.amazon.awscdk.services.lambda.Function;
 import software.amazon.awscdk.services.lambda.Runtime;
+import software.amazon.awscdk.services.lambda.SnapStartConf;
 import software.amazon.awscdk.services.lambda.Version;
 import software.amazon.awscdk.services.s3.Bucket;
 import software.amazon.awscdk.services.s3.BucketEncryption;
 import software.constructs.Construct;
-import software.amazon.awscdk.Stack;
-import software.amazon.awscdk.StackProps;
 
 public class CdkStack extends Stack {
     public CdkStack(final Construct scope, final String id) {
@@ -37,22 +39,22 @@ public class CdkStack extends Stack {
                 .build();
 
         // S3 bucket
-         Bucket bucket = Bucket.Builder.create(this, "ValidationFilesS3Bucket")
-                 .encryption(BucketEncryption.S3_MANAGED)
-                 .versioned(true)
-                 .autoDeleteObjects(true)
-                 .removalPolicy(RemovalPolicy.DESTROY)
-                 .build();
-
+        Bucket bucket = Bucket.Builder.create(this, "ValidationFilesS3Bucket")
+                .encryption(BucketEncryption.S3_MANAGED)
+                .versioned(true)
+                .autoDeleteObjects(true)
+                .removalPolicy(RemovalPolicy.DESTROY)
+                .build();
 
         // Lambda function
-        final Function unicornStockBrokerFunction = Function.Builder.create(this,  "UnicornStockBrokerFunction")
+        final Function unicornStockBrokerFunction = Function.Builder.create(this, "UnicornStockBrokerFunction")
                 .runtime(Runtime.JAVA_11)
                 .code(Code.fromAsset("../../UnicornStockLambda/target/UnicornStockBroker-1.0-aws.jar"))
                 .handler("org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest")
                 .memorySize(2048)
                 .timeout(Duration.seconds(200))
                 .architecture(Architecture.X86_64)
+                .snapStart(SnapStartConf.ON_PUBLISHED_VERSIONS)
                 .environment(Map.of(
                         "TABLE_NAME", table.getTableName(),
                         "BUCKET_NAME", bucket.getBucketName()
@@ -60,8 +62,13 @@ public class CdkStack extends Stack {
                 .build();
 
         // Lambda Version
-        Version functionVersion1 = Version.Builder.create(this, "UnicornStockBrokerFunctionVersion1")
-                .lambda(unicornStockBrokerFunction)
+        Version currentVersion = unicornStockBrokerFunction.getCurrentVersion();
+
+        // Lambda Alias
+        Alias lambdaAlias = Alias.Builder.create(this, "UnicornStockBrokerFunctionAlias")
+                .aliasName("prod")
+                .description(currentVersion.getVersion())
+                .version(currentVersion)
                 .build();
 
         // Permissions
@@ -70,7 +77,7 @@ public class CdkStack extends Stack {
 
         // API Gateway
         LambdaRestApi.Builder.create(this, "UnicornStockBrokerApi")
-                .handler(functionVersion1)
+                .handler(lambdaAlias)
                 .build();
 
     }

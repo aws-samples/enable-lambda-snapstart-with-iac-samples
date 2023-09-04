@@ -3,6 +3,8 @@ package com.myorg;
 import java.util.Map;
 import software.amazon.awscdk.Duration;
 import software.amazon.awscdk.RemovalPolicy;
+import software.amazon.awscdk.Stack;
+import software.amazon.awscdk.StackProps;
 import software.amazon.awscdk.services.apigateway.LambdaRestApi;
 import software.amazon.awscdk.services.dynamodb.Attribute;
 import software.amazon.awscdk.services.dynamodb.AttributeType;
@@ -15,8 +17,6 @@ import software.amazon.awscdk.services.lambda.Runtime;
 import software.amazon.awscdk.services.s3.Bucket;
 import software.amazon.awscdk.services.s3.BucketEncryption;
 import software.constructs.Construct;
-import software.amazon.awscdk.Stack;
-import software.amazon.awscdk.StackProps;
 
 public class CdkStack extends Stack {
     public CdkStack(final Construct scope, final String id) {
@@ -36,16 +36,16 @@ public class CdkStack extends Stack {
                 .build();
 
         // S3 bucket
-         Bucket bucket = Bucket.Builder.create(this, "ValidationFilesS3Bucket")
-                 .encryption(BucketEncryption.S3_MANAGED)
-                 .versioned(true)
-                 .autoDeleteObjects(true)
-                 .removalPolicy(RemovalPolicy.DESTROY)
-                 .build();
+        Bucket bucket = Bucket.Builder.create(this, "ValidationFilesS3Bucket")
+                .encryption(BucketEncryption.S3_MANAGED)
+                .versioned(true)
+                .autoDeleteObjects(true)
+                .removalPolicy(RemovalPolicy.DESTROY)
+                .build();
 
 
         // Lambda function
-        final Function unicornStockBrokerFunction = Function.Builder.create(this,  "UnicornStockBrokerFunction")
+        final Function unicornStockBrokerFunction = Function.Builder.create(this, "UnicornStockBrokerFunction")
                 .runtime(Runtime.JAVA_11)
                 .code(Code.fromAsset("../../UnicornStockLambda/target/UnicornStockBroker-1.0-aws.jar"))
                 .handler("org.springframework.cloud.function.adapter.aws.FunctionInvoker::handleRequest")
