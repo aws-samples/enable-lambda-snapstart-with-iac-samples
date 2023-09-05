@@ -1,4 +1,4 @@
-# How to Enable Lambda Snapstart with AWS Cloudformation, AWS SAM and Terraform
+# How to Enable Lambda Snapstart with AWS Cloudformation, AWS SAM, AWS CDK and Terraform
 
 This Sample Code repository demonstrates how to enable Lambda SnapStart with AWS Cloudformation, AWS SAM, AWS CDK and Terraform.
 
